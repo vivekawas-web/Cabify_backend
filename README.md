@@ -261,3 +261,95 @@ The response will be in JSON format.
   "message": "Unauthorized"
 }
 ```
+
+# Captain API Documentation
+
+## Captain Registration API
+
+### Endpoint
+
+`POST /captains/register`
+
+### Description
+
+The `/captains/register` endpoint allows new captains to create an account by providing their personal and vehicle information. Upon successful registration, the server responds with a confirmation message and a token for authentication.
+
+### Request Format
+
+The request must be sent as a JSON object in the body of the POST request.
+
+### Required Fields
+
+- **fullname (object)**: Contains the captain's full name.
+  - **firstname (string)**: The first name of the captain (mandatory, at least 3 characters).
+  - **lastname (string)**: The last name of the captain (optional, at least 3 characters if provided).
+- **email (string)**: The email address of the captain (mandatory, valid email format).
+- **password (string)**: The password for the captain account (mandatory, at least 6 characters).
+- **vehicle (object)**: Contains the vehicle information.
+  - **color (string)**: The color of the vehicle (mandatory, at least 3 characters).
+  - **plate (string)**: The vehicle's plate number (mandatory, at least 3 characters).
+  - **capacity (number)**: The capacity of the vehicle (mandatory, must be at least 1).
+  - **vehicleType (string)**: The type of vehicle (mandatory, must be one of `'car'`, `'motorcycle'`, `'auto'`).
+
+### Example Request Body
+
+```json
+{
+  "fullname": {
+    "firstname": "Jane",
+    "lastname": "Doe"
+  },
+  "email": "jane.doe@example.com",
+  "password": "securepassword",
+  "vehicle": {
+    "color": "red",
+    "plate": "ABC123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+### Response Format
+
+The response will be in JSON format.
+
+#### Success Response
+**Status Code:** `201 Created`
+{
+  "token": "string",
+  "captain": {
+    "fullname": {
+      "firstname": "Jane",
+      "lastname": "Doe"
+    },
+    "email": "jane.doe@example.com",
+    "vehicle": {
+      "color": "red",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }
+}
+#### Error Responses
+
+**Status Code:** `400 Bad Request`
+
+{
+  "errors": [
+    { "msg": "Invalid Email", "param": "email" },
+    { "msg": "First name must be at least 3 characters long", "param": "fullname.firstname" },
+    { "msg": "Password must be at least 6 characters long", "param": "password" },
+    { "msg": "Color must be at least 3 characters long", "param": "vehicle.color" },
+    { "msg": "Plate must be at least 3 characters long", "param": "vehicle.plate" },
+    { "msg": "Capacity must be at least 1", "param": "vehicle.capacity" },
+    { "msg": "Invalid vehicle type", "param": "vehicle.vehicleType" }
+  ]
+}
+
+**Status Code:** `409 Conflict`
+
+{
+  "message": "Captain already exists"
+}
+
+```
